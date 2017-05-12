@@ -147,7 +147,7 @@ c = windyGridworld(start)
 c._render()
 reward = 0
 episode = 10000
-step = 100
+step = 1000
 alpha = 0.1
 gamma = 1
 num = 0
@@ -160,13 +160,14 @@ for j in range(step):
     a = e*np.random.randint(len(c.action_space)) + (1-e)*c.renderFcn()
     row.append(c.state)
     for i in range(episode):
-        print('old_state: ',c.state,' action: ', a, ' epsilon:', e)
+#         print('old_state: ',c.state,' action: ', a, ' epsilon:', e)
+        s = c.state
         snew,rnew,done = c._step(a, reward)
         row.append(snew)
         
         e = c.eGreedy()
         anew = e*np.random.randint(len(c.action_space)) + (1-e)*c.renderFcn()
-        pos = np.where(c.states == c.state)
+        pos = np.where(c.states == s)
         posnew = np.where(c.states == snew)
         
         c.Q[pos] = c.Q[pos] + alpha * (rnew + gamma*c.Q[posnew] - c.Q[pos])
@@ -178,30 +179,12 @@ for j in range(step):
             print('terminal state: ', c.state,'steps: ',num)
             break
     
-#     c.done = False
+
     num = 0
     
-#     print('----------------------')
-#     print(c.Q)
 
 print(row)
-#     
-# print('a',a)
-# iter = 10000
-# snew,rnew,done = c._step(2, reward)
-
-
-
-# for i in range(iter):
-#     a = np.random.randint(len(c.action_space))
-#     print('old_state',c.state,', action: ',a)
-#     snew,rnew,done = c._step(a, reward)
-# #     print('old sate: ', c.state ,', new state: ',snew,' reward: ',rnew, ' action: ', a)
-#     if done:
-#         print('goal sate: ',snew,' total_reward: ',rnew, ' action: ', a)
-#         break
-#     reward = rnew
-    
+print(c.Q)
 
 
 
