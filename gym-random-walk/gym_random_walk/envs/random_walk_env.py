@@ -3,7 +3,7 @@ from gym import error, spaces, utils
 from gym.utils import seeding
 import numpy as np
 
-class RandomWalkEnv(gym.Env):
+class RandomWalkEnv:
   metadata = {'render.modes': ['human']}
 
   def __init__(self):
