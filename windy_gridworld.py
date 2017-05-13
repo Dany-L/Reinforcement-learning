@@ -157,29 +157,39 @@ epsilon = 0.1
 num = 0
 num_ges = []
 count = []
-e = c.eGreedy(epsilon)
-
 
 for j in range(step):
     
     row = []
+    
+    #init a starting state s
     c._reset()
+    #select an action a from s using a policy pi derived from Q e-greedy
+    e = c.eGreedy(epsilon)
     a = e*np.random.randint(len(c.action_space)) + (1-e)*c.renderFcn()
+    
     row.append(c.state)
     for i in range(episode):
 #         print('old_state: ',c.state,' action: ', a, ' epsilon:', e)
+
         s = c.state
+        #execute a observe r,s'
         snew,rnew,done = c._step(a, reward)
         row.append(snew)
         
+        #Derive pi from Q, then selection action a' from s'
         e = c.eGreedy(epsilon)
         anew = e*np.random.randint(len(c.action_space)) + (1-e)*c.renderFcn()
+        
         pos = np.where(c.states == s)
         posnew = np.where(c.states == snew)
         
+        #update Q
         c.Q[pos] = c.Q[pos] + alpha * (rnew + gamma*c.Q[posnew] - c.Q[pos])
         
+        #s = s' and a = a'
         a = anew
+        
         num += 1
 #         print(c.Q)
         if done:
