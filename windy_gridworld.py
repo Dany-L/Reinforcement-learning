@@ -22,7 +22,7 @@ class windyGridworld():
         if (action==0):
             if (pos[1] == 0):
                 self.state = self.state
-                reward += 1
+#                 reward += 1
             else:
                 w = self.wind(pos)
                 newPos = list(pos)
@@ -37,7 +37,7 @@ class windyGridworld():
         if (action==2):
             if (pos[1] == 9):
                 self.state = self.state
-                reward += 1
+#                 reward += 1
             else:
                 w = self.wind(pos)
                 newPos = list(pos)
@@ -51,7 +51,7 @@ class windyGridworld():
         if (action==1):
             if (pos[0] == 0):
                 self.state = self.state
-                reward += 1
+#                 reward += 1
             else:
                 w = self.wind(pos)
                 newPos = list(pos)
@@ -65,7 +65,7 @@ class windyGridworld():
         if (action==3):
             if (pos[0] == 6):
                 self.state = self.state
-                reward += 1
+#                 reward += 1
             else:
                 w = self.wind(pos)
                 newPos = list(pos)
@@ -149,7 +149,7 @@ start = 30
 c = windyGridworld(start)
 c._render()
 reward = 0
-episode = 10000
+episode = 100000
 step = 500
 alpha = 0.1
 gamma = 1
@@ -193,20 +193,22 @@ for j in range(step):
         num += 1
 #         print(c.Q)
         if done:
-            num_ges.append(num)
-#             num_ges.append(sum(num_ges)+num)
+            if (j>0):
+                num_ges.append(num_ges[j-1]+num)
+            else:
+                num_ges.append(num)
             count.append(j)
             print('terminal state: ', c.state,'steps: ',num)
+            if (num < 18):
+                print(row)
             break
     
 
     num = 0
     
-
-print(row)
+print('--------------------------------')
+# print(row)
 print(c.Q)
-print(num_ges)
-print(count)
 plt.plot(num_ges,count)
 plt.show()
 
