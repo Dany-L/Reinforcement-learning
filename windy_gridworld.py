@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 class windyGridworld():
 
@@ -21,7 +22,7 @@ class windyGridworld():
         if (action==0):
             if (pos[1] == 0):
                 self.state = self.state
-#                 reward += 1
+                reward += 1
             else:
                 w = self.wind(pos)
                 newPos = list(pos)
@@ -36,7 +37,7 @@ class windyGridworld():
         if (action==2):
             if (pos[1] == 9):
                 self.state = self.state
-#                 reward += 1
+                reward += 1
             else:
                 w = self.wind(pos)
                 newPos = list(pos)
@@ -50,7 +51,7 @@ class windyGridworld():
         if (action==1):
             if (pos[0] == 0):
                 self.state = self.state
-#                 reward += 1
+                reward += 1
             else:
                 w = self.wind(pos)
                 newPos = list(pos)
@@ -64,7 +65,7 @@ class windyGridworld():
         if (action==3):
             if (pos[0] == 6):
                 self.state = self.state
-#                 reward += 1
+                reward += 1
             else:
                 w = self.wind(pos)
                 newPos = list(pos)
@@ -134,9 +135,11 @@ class windyGridworld():
         
         return direction.index(max(direction))
             
-    def eGreedy(self):
-        n = np.random.randint(10)
-        if (n>8):
+    def eGreedy(self,epsilon):
+        m = 100
+        n = epsilon * 100
+        p = np.random.randint(m)
+        if (p>(m-n-1)):
             epsilon = 1
         else:
             epsilon = 0
@@ -147,11 +150,15 @@ c = windyGridworld(start)
 c._render()
 reward = 0
 episode = 10000
-step = 1000
+step = 500
 alpha = 0.1
 gamma = 1
+epsilon = 0.1
 num = 0
-e = c.eGreedy()
+num_ges = []
+count = []
+e = c.eGreedy(epsilon)
+
 
 for j in range(step):
     
@@ -165,7 +172,7 @@ for j in range(step):
         snew,rnew,done = c._step(a, reward)
         row.append(snew)
         
-        e = c.eGreedy()
+        e = c.eGreedy(epsilon)
         anew = e*np.random.randint(len(c.action_space)) + (1-e)*c.renderFcn()
         pos = np.where(c.states == s)
         posnew = np.where(c.states == snew)
@@ -176,6 +183,9 @@ for j in range(step):
         num += 1
 #         print(c.Q)
         if done:
+            num_ges.append(num)
+#             num_ges.append(sum(num_ges)+num)
+            count.append(j)
             print('terminal state: ', c.state,'steps: ',num)
             break
     
@@ -185,7 +195,10 @@ for j in range(step):
 
 print(row)
 print(c.Q)
-
+print(num_ges)
+print(count)
+plt.plot(num_ges,count)
+plt.show()
 
 
         
