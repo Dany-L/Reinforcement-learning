@@ -116,8 +116,7 @@ class windyGridworld():
         
 start = 30
 end = 37
-c = windyGridworld(start,end)
-c._render()
+
 episode = 100000
 step = 100
 alpha = 0.1
@@ -253,77 +252,40 @@ def plotPath(row,color,algo,endstate):
     plt.legend()
     plt.plot(x,y,color)
     
-    
-    
-    
-
 
 
 #-------------------------------------------------------------------------------
 
+c = windyGridworld(start,end)
+c._render()
 
+Q,row,num2,count,num_ges = rlwindy(c,episode, step, alpha, gamma, epsilon,0)
 
-# Q,row,num2,count,num_ges = rlwindy(c,episode, step, alpha, gamma, epsilon,0)
 c=windyGridworld(start,end)
 c._render()
 
-# Q_q,row_q,num2_q,count_q,num_ges_q = rlwindy(c,episode, step, alpha, gamma, epsilon,1)
+Q_q,row_q,num2_q,count_q,num_ges_q = rlwindy(c,episode, step, alpha, gamma, epsilon,1)
 
 #-------------------------------------------------------------------------------
 # 1a)
-# plt.plot(count,num2,label="SARSA")
-# # plt.plot(num_ges,count,label='SARSA')
-# plt.plot(count_q,num2_q,label="Q-learning")
-# # plt.plot(num_ges_q,count,label="Q-learning")
-# plt.xlabel('#episodes')
-# plt.ylabel('#steps')
+plt.figure(1)
+plt.plot(count,num2,label="SARSA")
+# plt.plot(num_ges,count,label='SARSA')
+plt.plot(count_q,num2_q,label="Q-learning")
+# plt.plot(num_ges_q,count,label="Q-learning")
+plt.xlabel('#episodes')
+plt.ylabel('#steps')
+plt.grid()
+plt.legend()
 
 # 1b)
 #-------------------------------------------------------------------------------
-# x=[]
-# y=[]
-# dx =[]
-# dy = []
-# plt.subplot(211)
-# for k in range(len(row)):
-#     pos = np.where(c.states == row[k])
-#     y.append(int(-pos[0]))
-#     x.append(int(pos[1]))
-#     if (k+1 < len(row)):
-#         posnext = np.where(c.states == row[k+1])
-#         dy=(int(-posnext[0])-y[k]) - (int(-posnext[0])-y[k])*0.6
-#         dx=(int(posnext[1])-x[k]) - (int(posnext[1])-x[k])*0.6
-#         plt.arrow(int(x[k]), int(y[k]), dx, dy,head_width=0.2, head_length=0.5, fc='r', ec='r')
-#   
-# plt.plot(x,y,'ro',label = "SARSA")
-# plt.plot(0,-3,'cx',label = 'start')
-# plt.plot(7,-3,'gx',label = 'goal')   
-# plt.grid()
-# plt.legend()
-# plt.plot(x,y,'r')
-# 
-# x=[]
-# y=[]
-# dx =[]
-# dy = []
-# plt.subplot(212)
-# for k in range(len(row_q)):
-#     pos = np.where(c.states == row_q[k])
-#     y.append(int(-pos[0]))
-#     x.append(int(pos[1]))
-#     if (k+1 < len(row_q)):
-#         posnext = np.where(c.states == row_q[k+1])
-#         dy=(int(-posnext[0])-y[k]) - (int(-posnext[0])-y[k])*0.6
-#         dx=(int(posnext[1])-x[k]) - (int(posnext[1])-x[k])*0.6
-#         plt.arrow(int(x[k]), int(y[k]), dx, dy,head_width=0.2, head_length=0.5, fc='b', ec='b')
-# plt.plot(x,y,'bo',label="Q-learning")
-# plt.plot(0,-3,'cx',label = 'start')
-# plt.plot(7,-3,'gx',label = 'goal')   
-# plt.grid()
-# ------------------------------------------------------------------------------
+plt.figure(2)
+plt.subplot(211)
+plotPath(row, 'r', 'SARSA', [3,7])
+plt.subplot(212)
+plotPath(row_q, 'b', 'Q-learning', [3,7])
 
-# plt.legend()
-# plt.show()
 
 # ------------------------------------------------------------------------------
 # 1c
@@ -337,7 +299,7 @@ c_5 = windyGridworld(start,38)
 c_7 = windyGridworld(start,47)
 c_8 = windyGridworld(start,48)
 
-
+plt.figure(3)
 Q_std,row_std,num2_std,count_std,num_ges_std = rlwindy(c_std,episode, step, alpha, gamma, epsilon,1)
 plt.plot(count_std,num2_std,label = "std")
 Q_1,row_1,num2_1,count_1,num_ges_1 = rlwindy(c_1,episode, step, alpha, gamma, epsilon,1)
@@ -359,7 +321,7 @@ plt.plot(count_8,num2_8,label = "48")
 
 plt.legend()
 
-plt.figure(2)
+plt.figure(4)
 plotPath(row_8, 'r', 'Q-learning',[4 ,8])
 plt.show()
 
