@@ -102,41 +102,6 @@ class windyGridworld():
         elif (int(pos[1])==6 or int(pos[1])==7):
             w = 2
         return w
-        
-#         pos = np.where(self.states == s)
-#         pos = list(pos)
-# #         left
-#         pos[1] -= 1
-#         if (pos[1]<0):
-#             pos[1] = 0
-#         l = Q[tuple(pos)]
-#         pos = np.where(self.states == s)
-#         pos = list(pos)
-# #         right
-#         pos[1] += 1
-#         if (pos[1]>9):
-#             pos[1] = 9
-#         r = Q[tuple(pos)]
-#         pos = np.where(self.states == s)
-#         pos = list(pos)
-# #         down
-#         pos[0] += 1
-#         if (pos[0]>6):
-#             pos[0] = 6
-#         d = Q[tuple(pos)]
-#         pos = np.where(self.states == s)
-#         pos = list(pos)
-# #         up
-#         pos[0] -= 1
-#         if (pos[0]<0):
-#             pos[0] = 0
-#         u = Q[tuple(pos)]
-#         pos = np.where(self.states == self.state)
-#         pos = list(pos)
-#               
-#         direction = [l,u,r,d]
-#         
-#         return direction.index(max(direction)),max(direction)
             
     def eGreedy(self,epsilon):
         m = 100
@@ -211,7 +176,33 @@ for j in range(step):
     num = 0
      
 print('------------------------------------------------------------------------')
-print(np.round(c.Q_sarsa,1))
+# print(np.round(c.Q_sarsa,1))
+print(row)
+# 1b)
+#-------------------------------------------------------------------------------
+# x=[]
+# y=[]
+# dx =[]
+# dy = []
+# plt.subplot(211)
+# for k in range(len(row)):
+#     pos = np.where(c.states == row[k])
+#     y.append(int(-pos[0]))
+#     x.append(int(pos[1]))
+#     if (k+1 < len(row)):
+#         posnext = np.where(c.states == row[k+1])
+#         dy=(int(-posnext[0])-y[k]) - (int(-posnext[0])-y[k])*0.6
+#         dx=(int(posnext[1])-x[k]) - (int(posnext[1])-x[k])*0.6
+#         plt.arrow(int(x[k]), int(y[k]), dx, dy,head_width=0.2, head_length=0.5, fc='r', ec='r')
+# 
+# plt.plot(x,y,'ro',label = "SARSA")
+# plt.plot(0,-3,'rx',label = 'start')
+# plt.plot(7,-3,'gx',label = 'goal')   
+# plt.grid()
+# plt.legend()
+# plt.plot(x,y,'r')
+#-------------------------------------------------------------------------------
+# 1a)
 plt.plot(num_ges,count,label='SARSA')
 
 num = 0
@@ -219,32 +210,32 @@ num_ges = []
 count = []
  
 for j in range(step):
-     
+      
     row = []
     reward = 0
     #init a starting state s
     c._reset()
- 
-     
+  
+      
     row.append(c.state)
     for i in range(episode):
-         
+          
 #         select an action a from s using a plicy pi derived from Q (epsilon greedy)
         e = c.eGreedy(epsilon)
         l = list(c.Q_q[c.state,:])
         a = e*np.random.randint(len(c.action_space)) + (1-e)*l.index(max(l))
-     
+      
         s = c.state
 #         execute a, observe r, s'
         snew,r,done = c._step(a, reward)
-         
+          
         row.append(snew)
-         
+          
         #update Q
         c.Q_q[s,a] = c.Q_q[s,a] + alpha*(r + gamma*max(c.Q_q[snew,:]) - c.Q_q[s,a])
-         
+          
         #s = s' and a = a'
-                 
+                  
         num += 1
 #         print(c.Q)
         if done:
@@ -257,14 +248,37 @@ for j in range(step):
             if (num < 18):
                 print(row)
             break
- 
-     
+  
+      
     num = 0
- 
+  
 print('------------------------------------------------------------------------')
-print(np.round(c.Q_q))
+# print(np.round(c.Q_q))
+print(row)
+# 1b)
+#-------------------------------------------------------------------------------
+# x=[]
+# y=[]
+# dx =[]
+# dy = []
+# plt.subplot(212)
+# for k in range(len(row)):
+#     pos = np.where(c.states == row[k])
+#     y.append(int(-pos[0]))
+#     x.append(int(pos[1]))
+#     if (k+1 < len(row)):
+#         posnext = np.where(c.states == row[k+1])
+#         dy=(int(-posnext[0])-y[k]) - (int(-posnext[0])-y[k])*0.6
+#         dx=(int(posnext[1])-x[k]) - (int(posnext[1])-x[k])*0.6
+#         plt.arrow(int(x[k]), int(y[k]), dx, dy,head_width=0.2, head_length=0.5, fc='b', ec='b')
+# plt.plot(x,y,'bo',label="Q-learning")
+# plt.plot(0,-3,'rx',label = 'start')
+# plt.plot(7,-3,'gx',label = 'goal')   
+# ------------------------------------------------------------------------------
+# 1a)
 plt.plot(num_ges,count,label="Q-learning")
 plt.legend()
+# plt.grid()
 plt.show()
 
 
