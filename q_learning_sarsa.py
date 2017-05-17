@@ -113,6 +113,25 @@ class windyGridworld():
         else:
             epsilon = 0
         return epsilon
+    
+    def plotQ(self,Q):
+        plt.xlim(-0.5,self.x+0.5)
+        plt.ylim(-self.y-0.5,0.5)
+
+        for i in range(len(Q[:,0])):
+            l = list(Q[i,:])
+            a = l.index(max(l))
+            pos = np.where(self.states == i)
+#             print('action:',a,'state',i)
+            if (a == 0):
+                plt.arrow(int(pos[1])+0.1,-int(pos[0]),-0.2,0,head_width=0.2, head_length=0.2, fc='c', ec='c')     
+            if (a == 1):
+                plt.arrow(int(pos[1]),-int(pos[0])-0.1,0,0.2,head_width=0.2, head_length=0.2, fc='c', ec='c')
+            if (a == 2):
+                plt.arrow(int(pos[1])-0.1,-int(pos[0]),0.2,0,head_width=0.2, head_length=0.2, fc='c', ec='c')
+            if (a == 3):
+                plt.arrow(int(pos[1]),-int(pos[0])+0.1,0,-0.2,head_width=0.2, head_length=0.2, fc='c', ec='c')
+            
         
 start = 30
 end = 37
