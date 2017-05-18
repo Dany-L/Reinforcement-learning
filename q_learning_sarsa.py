@@ -14,6 +14,8 @@ class windyGridworld():
         self.done = False
         self.state = start
         self.endstate = end
+        self.x = 10
+        self.y = 7
         self.Q = np.zeros(len(self.action_space)*self.size).reshape(self.size,len(self.action_space))
 #         self.Q = np.zeros(len(self.action_space)*self.size).reshape(self.size,len(self.action_space))
 #         self.Q_q = np.zeros(70).reshape(7,10)
@@ -137,7 +139,7 @@ start = 30
 end = 37
 
 episode = 100000
-step = 100
+step = 1000
 alpha = 0.1
 gamma = 1
 epsilon = 0.1
@@ -305,44 +307,54 @@ plotPath(row, 'r', 'SARSA', [3,7])
 plt.subplot(212)
 plotPath(row_q, 'b', 'Q-learning', [3,7])
 
+plt.figure(3)
+plt.subplot(211)
+c.plotQ(Q)
+plt.title('SARSA')
+plt.grid()
+plt.subplot(212)
+c.plotQ(Q_q)
+plt.title('Q-learning')
+plt.grid()
+plt.show()
 
 # ------------------------------------------------------------------------------
 # 1c
-c_std = windyGridworld(start,end)
-c_1 = windyGridworld(start,26)
-c_2 = windyGridworld(start,27)
-c_3 = windyGridworld(start,28)
-c_4 = windyGridworld(start,36)
-c_5 = windyGridworld(start,38)
-# c_6 = windyGridworld(start,46)
-c_7 = windyGridworld(start,47)
-c_8 = windyGridworld(start,48)
-
-plt.figure(3)
-Q_std,row_std,num2_std,count_std,num_ges_std = rlwindy(c_std,episode, step, alpha, gamma, epsilon,1)
-plt.plot(count_std,num2_std,label = "std")
-Q_1,row_1,num2_1,count_1,num_ges_1 = rlwindy(c_1,episode, step, alpha, gamma, epsilon,1)
-plt.plot(count_1,num2_1,label = "26")
-Q_2,row_2,num2_2,count_2,num_ges_2 = rlwindy(c_2,episode, step, alpha, gamma, epsilon,1)
-plt.plot(count_2,num2_2,label = "27")
-Q_3,row_3,num2_3,count_3,num_ges_3 = rlwindy(c_3,episode, step, alpha, gamma, epsilon,1)
-plt.plot(count_3,num2_3,label = "28")
-Q_4,row_4,num2_4,count_4,num_ges_4 = rlwindy(c_4,episode, step, alpha, gamma, epsilon,1)
-plt.plot(count_4,num2_4,label = "36")
-Q_5,row_5,num2_5,count_5,num_ges_5 = rlwindy(c_5,episode, step, alpha, gamma, epsilon,1)
-plt.plot(count_5,num2_5,label = "38")
-# Q_6,row_6,num2_6,count_6,num_ges_6 = rlwindy(c_6,episode, step, alpha, gamma, epsilon,1)
-# plt.plot(count_6,num2_6,label = "46")
-Q_7,row_7,num2_7,count_7,num_ges_7 = rlwindy(c_7,episode, step, alpha, gamma, epsilon,1)
-plt.plot(count_7,num2_7,label = "47")
-Q_8,row_8,num2_8,count_8,num_ges_8 = rlwindy(c_8,episode, step, alpha, gamma, epsilon,1)
-plt.plot(count_8,num2_8,label = "48")
-
-plt.legend()
-
-plt.figure(4)
-plotPath(row_8, 'r', 'Q-learning',[4 ,8])
-plt.show()
+# c_std = windyGridworld(start,end)
+# c_1 = windyGridworld(start,26)
+# c_2 = windyGridworld(start,27)
+# c_3 = windyGridworld(start,28)
+# c_4 = windyGridworld(start,36)
+# c_5 = windyGridworld(start,38)
+# # c_6 = windyGridworld(start,46)
+# c_7 = windyGridworld(start,47)
+# c_8 = windyGridworld(start,48)
+# 
+# plt.figure(3)
+# Q_std,row_std,num2_std,count_std,num_ges_std = rlwindy(c_std,episode, step, alpha, gamma, epsilon,1)
+# plt.plot(count_std,num2_std,label = "std")
+# Q_1,row_1,num2_1,count_1,num_ges_1 = rlwindy(c_1,episode, step, alpha, gamma, epsilon,1)
+# plt.plot(count_1,num2_1,label = "26")
+# Q_2,row_2,num2_2,count_2,num_ges_2 = rlwindy(c_2,episode, step, alpha, gamma, epsilon,1)
+# plt.plot(count_2,num2_2,label = "27")
+# Q_3,row_3,num2_3,count_3,num_ges_3 = rlwindy(c_3,episode, step, alpha, gamma, epsilon,1)
+# plt.plot(count_3,num2_3,label = "28")
+# Q_4,row_4,num2_4,count_4,num_ges_4 = rlwindy(c_4,episode, step, alpha, gamma, epsilon,1)
+# plt.plot(count_4,num2_4,label = "36")
+# Q_5,row_5,num2_5,count_5,num_ges_5 = rlwindy(c_5,episode, step, alpha, gamma, epsilon,1)
+# plt.plot(count_5,num2_5,label = "38")
+# # Q_6,row_6,num2_6,count_6,num_ges_6 = rlwindy(c_6,episode, step, alpha, gamma, epsilon,1)
+# # plt.plot(count_6,num2_6,label = "46")
+# Q_7,row_7,num2_7,count_7,num_ges_7 = rlwindy(c_7,episode, step, alpha, gamma, epsilon,1)
+# plt.plot(count_7,num2_7,label = "47")
+# Q_8,row_8,num2_8,count_8,num_ges_8 = rlwindy(c_8,episode, step, alpha, gamma, epsilon,1)
+# plt.plot(count_8,num2_8,label = "48")
+# 
+# plt.legend()
+# 
+# plt.figure(4)
+# plotPath(row_8, 'r', 'Q-learning',[4 ,8])
+# plt.show()
 
 
        
