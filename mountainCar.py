@@ -2,6 +2,7 @@ import gym
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import time
 
 def eGreedy(epsilon):
     n = np.random.randint(100)
@@ -63,7 +64,7 @@ def plotQ(Q,k):
     ax.set_ylabel('velocity')
     ax.set_zlabel('max Q value')
     
-    plt.show()
+#     plt.show()
     
 # Q = np.arange(1200).reshape(400,3)
 # k = 1
@@ -77,7 +78,7 @@ def TabularQ(Q,P,episode,steps,epsilon,gamma,alpha,lamb):
         print('#episode:',ep)
         print('___________________________________________________________________')
         
-        E = np.zeros(d*d*env.action_space.n).reshape(20*20,env.action_space.n)
+        E = np.zeros(d*d*env.action_space.n).reshape(d*d,env.action_space.n)
         
         s = env._reset()
         s_d = findState(P,s)
@@ -114,8 +115,8 @@ def TabularQ(Q,P,episode,steps,epsilon,gamma,alpha,lamb):
                     E[s_d,a] = 0
             
             if (snew[0]>= 0.5):
-                if (ep%10 == 0 and ep > 0):
-                    plotQ(Q,ep)
+#                 if (ep%10 == 0 and ep > 0):
+#                     plotQ(Q,ep)
                 step_til_end.append(st)
                 print('geschafft in', st,'steps')
                 break
@@ -124,95 +125,83 @@ def TabularQ(Q,P,episode,steps,epsilon,gamma,alpha,lamb):
             s_d = s_d_new
             a = anew
     
-    return step_til_end
+    return step_til_end,Q
 
-        
-env=gym.make('MountainCar-v0')
-d = 20
-
-p_d = np.linspace(-1.2,0.5, d)
-p_dot_d = np.linspace(-0.07,0.07,d)
-
-P = np.zeros(d*d*2).reshape(d*d,2)
-Q = np.zeros(d*d*env.action_space.n).reshape(20*20,env.action_space.n)
-
-count = 0
-for i in range(len(p_dot_d)):
-    for j in range(len(p_d)):
-        P[count,:] = np.array([p_d[j],p_dot_d[i]])
-        count +=1
+tstart = []
+tend = []
+for m in range(3):
+    tstart.append(time.time())
+    env=gym.make('MountainCar-v0')
+    intervals = [20,200,2000]
+    d = intervals[m]
     
+    p_d = np.linspace(-1.2,0.5, d)
+    p_dot_d = np.linspace(-0.07,0.07,d)
+    
+    P = np.zeros(d*d*2).reshape(d*d,2)
+    Q = np.zeros(d*d*env.action_space.n).reshape(d*d,env.action_space.n)
+    
+    count = 0
+    for i in range(len(p_dot_d)):
+        for j in range(len(p_d)):
+            P[count,:] = np.array([p_d[j],p_dot_d[i]])
+            count +=1
+        
+    
+    episode = 100
+    steps = int(1e5)
+    epsilon = 0.0
+    gamma = 0.99
+    alpha = 0.1
+    lamb = 0.8
+    
+    step_til_end=TabularQ(Q,P,episode, steps, epsilon, gamma, alpha, lamb)
+    plt.figure(1)
+    plt.subplot(211)
+    plt.plot(range(episode),step_til_end,label = str(m))
 
-episode = 100
-steps = int(1e5)
-epsilon = 0.0
-gamma = 0.99
-alpha = 0.1
-lamb = 0.8
+    tend.append(time.time())
 
-step_til_end = TabularQ(Q,P,episode, steps, epsilon, gamma, alpha, lamb)
-
-plt.figure(2)
-plt.plot(range(episode),step_til_end)
+deltaT = []
+for m in len(tstart):
+    deltaT.append((tend[m]-tstart[m])/float(60))
+    
 plt.xlabel('#steps unit goal is reached')
 plt.ylabel('#episodes')
+plt.legend()
 plt.grid()
-plt.show()
-# for ep in range(episode):
-#     print('#episode:',ep)
-#     print('___________________________________________________________________')
-#     step_til_end = []
-#     E = np.zeros(d*d*env.action_space.n).reshape(20*20,env.action_space.n)
-#     
-#     s = env._reset()
-#     s_d = findState(P,s)
-#     
-#     e = eGreedy(epsilon)
-#     l = list(Q[s_d,:])
-#     
-#     a = e*np.random.randint(env.action_space.n) + (1-e)*l.index(max(l))
-#     
-#     for st in range(steps):
-#         if (st%100==0):
-#             print('oldpos:', s[0],'oldvel:',s[1],'action:',a)
-#         snew,rnew,done,_ = env._step(a)
-#         if (st%100==0):
-#             print('newpos:', snew[0],'newvel:',snew[1],'done?:',done)
-#         env._render()
-#         s_d_new = findState(P, snew)
-#         
-#         e = eGreedy(epsilon)
-#         l = list(Q[s_d_new,:])
-#         
-#         anew = e*np.random.randint(env.action_space.n) + (1-e)*l.index(max(l))
-#         
-#         astar = l.index(max(l))
-#         
-#         sigma = rnew + gamma*Q[s_d_new,astar] - Q[s_d,a]
-#         E[s_d,a] = E[s_d,a]+1
-#         
-#         for i in range(len(Q[:,0])):
-#             Q[s_d,a] = Q[s_d,a] + alpha * sigma *E[s_d,a]
-#             if (astar == anew):
-#                 E[s_d,a] = gamma*lamb *E[s_d,a]
-#             else:
-#                 E[s_d,a] = 0
-#         
-#         if (snew[0]>= 0.5):
-#             step_til_end.append(st)
-#             print('geschafft')
-#             break
-#             
-#         s = snew
-#         s_d = s_d_new
-#         a = anew
+plt.subplot(212)
+plt.plot(intervals,deltaT)
+plt.xlabel('intervals')
+plt.ylabel('time in min')
 
-     
-#     a = 2
-#     a = np.random.randint(env.action_space.n)
-#     print('action:',a)
-#     s,r,done,_ = env._step(a)
-#     print('state:',s)
-#     print('reward:',r)
-#     env._render()
-# print('lower bound',)
+plt.show()
+
+#     step_til_end = np.zeros(episode*10).reshape(10,episode)
+#     cumulative = []
+#     sum_average = []
+#     sum_steps = 0
+#     for n in range(10):
+#         st,Qnew = TabularQ(Q,P,episode, steps, epsilon, gamma, alpha, lamb)
+#         step_til_end[n,:]=st
+#         sum_average.append(1/episode * sum(step_til_end[n,:]))
+#         sum_steps += 1/episode * sum(step_til_end[n,:])
+#         cumulative.append(sum_steps)
+#         Q = Qnew
+
+        
+#     plt.figure(1)
+#     plt.subplot(211)
+#     plt.plot(range(10),cumulative)
+#     plt.grid()
+#     plt.ylabel('averaged cumulative number of steps reaching goal')
+#     
+#     plt.subplot(212)
+#     plt.plot(sum_average,range(100))
+#     plt.xlabel('averaged number of steps per episode')
+#     plt.ylabel('number of episodes')
+
+
+
+
+
