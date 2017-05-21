@@ -132,7 +132,7 @@ tend = []
 for m in range(3):
     tstart.append(time.time())
     env=gym.make('MountainCar-v0')
-    intervals = [20,200,2000]
+    intervals = [20,80,120]
     d = intervals[m]
     
     p_d = np.linspace(-1.2,0.5, d)
@@ -153,55 +153,65 @@ for m in range(3):
     epsilon = 0.0
     gamma = 0.99
     alpha = 0.1
-    lamb = 0.8
+    lamb = 0.9
     
-    step_til_end=TabularQ(Q,P,episode, steps, epsilon, gamma, alpha, lamb)
-    plt.figure(1)
-    plt.subplot(211)
-    plt.plot(range(episode),step_til_end,label = str(m))
-
+    step_til_end,Qnew=TabularQ(Q,P,episode, steps, epsilon, gamma, alpha, lamb)
+    np.save(r'/home/jack/Documents/LiClipse Workspace/RL/step_til_end_' + str(m)+ '.npy',step_til_end)
+#     plt.figure(1)
+#     plt.subplot(211)
+#     plt.plot(range(episode),step_til_end,label = str(m))
+ 
     tend.append(time.time())
 
 deltaT = []
-for m in len(tstart):
+for m in range(len(tstart)):
     deltaT.append((tend[m]-tstart[m])/float(60))
-    
-plt.xlabel('#steps unit goal is reached')
-plt.ylabel('#episodes')
-plt.legend()
-plt.grid()
-plt.subplot(212)
-plt.plot(intervals,deltaT)
-plt.xlabel('intervals')
-plt.ylabel('time in min')
+     
+np.save(r'/home/jack/Documents/LiClipse Workspace/RL/deltaT.npy',deltaT) 
+# 
+# plt.xlabel('#steps unit goal is reached')
+# plt.ylabel('#episodes')
+# plt.legend()
+# plt.grid()
+# plt.subplot(212)
+# plt.plot(intervals,deltaT)
+# plt.xlabel('intervals')
+# plt.ylabel('time in s')
 
-plt.show()
 
-#     step_til_end = np.zeros(episode*10).reshape(10,episode)
-#     cumulative = []
-#     sum_average = []
-#     sum_steps = 0
-#     for n in range(10):
-#         st,Qnew = TabularQ(Q,P,episode, steps, epsilon, gamma, alpha, lamb)
-#         step_til_end[n,:]=st
-#         sum_average.append(1/episode * sum(step_til_end[n,:]))
-#         sum_steps += 1/episode * sum(step_til_end[n,:])
-#         cumulative.append(sum_steps)
-#         Q = Qnew
 
-        
-#     plt.figure(1)
-#     plt.subplot(211)
-#     plt.plot(range(10),cumulative)
-#     plt.grid()
-#     plt.ylabel('averaged cumulative number of steps reaching goal')
+# step_til_end = np.zeros(episode*10).reshape(10,episode)
+# cumulative = []
+# sum_steps = 0
+# for n in range(10):
+#     Q = np.zeros(d*d*env.action_space.n).reshape(d*d,env.action_space.n)
+#     st,Qnew = TabularQ(Q,P,episode, steps, epsilon, gamma, alpha, lamb)
+#     step_til_end[n,:]=st
+#     sum_steps += 1/float(episode) * sum(step_til_end[n,:])
+#     cumulative.append(sum_steps)
+# #     Q = Qnew
+# 
+# 
+# np.save(r'/home/jack/Documents/LiClipse Workspace/RL/step_til_end.npy',step_til_end) 
+# 
+# sum_episode = []
+# for n in range(len(step_til_end[0,:])):
+#     sum_episode.append(sum(step_til_end[:,n]))
 #     
-#     plt.subplot(212)
-#     plt.plot(sum_average,range(100))
-#     plt.xlabel('averaged number of steps per episode')
-#     plt.ylabel('number of episodes')
-
-
+#     
+# plt.figure(1)
+# plt.subplot(211)
+# plt.plot(range(10),cumulative)
+# plt.grid()
+# plt.ylabel('averaged cumulative steps')
+#  
+# plt.subplot(212)
+# plt.plot(sum_episode,range(episode))
+# plt.xlabel('averaged number of steps per episode')
+# plt.ylabel('number of episodes')
+# plt.grid()
+# 
+# plt.show()
 
 
 
