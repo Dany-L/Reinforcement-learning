@@ -89,11 +89,11 @@ def TabularQ(Q,P,episode,steps,epsilon,gamma,alpha,lamb):
         a = e*np.random.randint(env.action_space.n) + (1-e)*l.index(max(l))
         
         for st in range(steps):
-            if (st%100==0):
-                print('oldpos:', s[0],'oldvel:',s[1],'action:',a)
+#             if (st%100==0):
+#                 print('oldpos:', s[0],'oldvel:',s[1],'action:',a)
             snew,rnew,done,_ = env._step(a)
-            if (st%100==0):
-                print('newpos:', snew[0],'newvel:',snew[1],'done?:',done)
+#             if (st%100==0):
+#                 print('newpos:', snew[0],'newvel:',snew[1],'done?:',done)
             env._render()
             s_d_new = findState(P, snew)
             
@@ -129,7 +129,7 @@ def TabularQ(Q,P,episode,steps,epsilon,gamma,alpha,lamb):
 
 tstart = []
 tend = []
-for m in range(3):
+for m in range(1):
     tstart.append(time.time())
     env=gym.make('MountainCar-v0')
     intervals = [20,80,120]
@@ -148,7 +148,7 @@ for m in range(3):
             count +=1
         
     
-    episode = 100
+    episode = 10
     steps = int(1e5)
     epsilon = 0.0
     gamma = 0.99
