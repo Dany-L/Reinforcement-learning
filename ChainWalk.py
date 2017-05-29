@@ -57,7 +57,8 @@ class ChainWalk():
         return s
     
     def reset(self):
-        self.state = 0
+        self.state = np.random.randint(len(self.action_space))
+#         self.state = 0
 #         print('start state:',self.state)
         
 c = ChainWalk(4)
@@ -131,10 +132,10 @@ def LSTDQ(D,k,phi,gamma,w):
             
             A = A+ np.transpose(getPhi(s,a))*(getPhi(s,a)-gamma*getPhi(snew,anew))
             b = b+ getPhi(s,a)*r
-            
-        count += 3
-        w_pi = np.linalg.inv(A)*np.transpose(b)
-        w = w_pi
+        
+    count += 3
+    w_pi = np.linalg.inv(A)*np.transpose(b)
+    w = w_pi
 
     return w_pi
 
@@ -142,17 +143,17 @@ def LSPI(D,k,phi,gamma,epsilon,w_null):
     w_tick = w_null
     count = 1
     c2 = 0
-#     while True:
-    for i in range(7):
+    while True:
+#     for i in range(7):
         print('iter:',count)
         w = w_tick
-        w_tick = LSTDQ(D,k,phi,gamma,w)
+        w_tick = LSTDQ(D[0:3,:],k,phi,gamma,w)
         plotChain(w_tick,count)
         print(w_tick) 
         c2 +=3
         count +=1
-#         if (np.linalg.norm(w_tick-w)<epsilon):
-#             break
+        if (np.linalg.norm(w_tick-w)<epsilon):
+            break
     
     plt.show()
     
