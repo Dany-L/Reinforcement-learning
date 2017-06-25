@@ -154,8 +154,8 @@ class Four_room_domain():
         self.state = start
         self.reward = 0
 
-def standard_Value_iteration_Algorithm(r,V,gamma):
-    
+def standard_Value_iteration_Algorithm(r,V,gamma,room):
+    states = r.states
     R = np.zeros(r.states.size).reshape(r.states.shape[0],r.states.shape[1])
     for i in range(4):
         pos_h = np.where(r.hallways[i]==r.states)
@@ -164,19 +164,74 @@ def standard_Value_iteration_Algorithm(r,V,gamma):
     optimal_V = np.zeros(V.size).reshape(V.shape[0],V.shape[1])
     old_V = np.zeros(V.size).reshape(V.shape[0],V.shape[1])
     
+    actual_room = r.w['room{}'.format(room)]
     
-    
-    while (np.linalg.norm(old_V-optimal_V)<1e-3):
+    for k in range(100):
         
-        for i in range(V.shape[0]):
-            for j in range(V.shape[1]):
-                pos = [i,j]
+        for i in range(actual_room.shape[0]):
+            for j in range(actual_room.shape[1]):
+                state = actual_room[i,j]
+                r_u = R[np.where(state-13==states)]
+                r_r = R[np.where(state+1==states)]
+                r_d = R[np.where(state+13==states)]
+                r_l = R[np.where(state-1==states)]
+                
                 if i==0:
+                    action1 = old_V[i,j]
                     if j == 0:
-                        action1 = float(2/3)*V[i+1,j]+float(1/9)*V[i,j+1]+float(2/9)*V[i,j]
-                        r1 = np.where()
-                        action2 = float(2/3)*V[i,j+1]+float(1/9)*V[i+1,j]+float(2/9)*V[i,j]
-                        optimal_V[i,j] =np.max(r1+gamma*action1,r2+gamma*action2) 
+                        action2 = old_V[i,j+1]
+                        action3 = old_V[i+1,j]
+                        action4 = old_V[i,j]
+                    elif j == actual_room.shape[1]-1:
+                        action2 = old_V[i,j]
+                        action3 = old_V[i+1,j]
+                        action4 = old_V[i,j-1]
+                    else:
+                        action2 = old_V[i,j+1]
+                        action3 = old_V[i+1,j]
+                        action4 = old_V[i,j-1]
+                elif i == actual_room.shape[0]-1:
+                    action3 = old_V[i,j]
+                    if j == 0:
+                        action1 = old_V[i-1,j]
+                        action2 = old_V[i,j+1]
+                        action4 = old_V[i,j]
+                    elif j == actual_room.shape[1]-1:
+                        action1 = old_V[i-1,j]
+                        action2 = old_V[i,j]
+                        action4 = old_V[i,j-1]
+                    else:
+                        action1 = old_V[i-1,j]
+                        action2 = old_V[i,j+1]
+                        action4 = old_V[i,j-1]
+                elif j == 0:
+                    action1 = old_V[i-1,j]
+                    action2 = old_V[i,j+1]
+                    action3 = old_V[i+1,j]
+                    action4 = old_V[i,j]
+                elif j == actual_room.shape[1]-1:
+                    action1 = old_V[i-1,j]
+                    action2 = old_V[i,j]
+                    action3 = old_V[i+1,j]
+                    action4 = old_V[i,j-1]
+                else:
+                    action1 = old_V[i-1,j]
+                    action2 = old_V[i,j+1]
+                    action3 = old_V[i+1,j]
+                    action4 = old_V[i,j-1]
+                
+                action_up = float(r_u + gamma*(2/float(3)*action1+1/float(9)*action2+1/float(9)*action3+1/float(9)*action4))
+                action_right = float(r_r + gamma*(1/float(9)*action1+2/float(3)*action2+1/float(9)*action3+1/float(9)*action4))
+                action_down = float(r_d + gamma*(1/float(9)*action1+1/float(9)*action2+2/float(3)*action3+1/float(9)*action4))
+                action_left = float(r_l + gamma*(1/float(9)*action1+1/float(9)*action2+1/float(9)*action3+2/float(3)*action4))
+                
+                optimal_V[i,j] = np.max([action_up,action_right,action_down,action_left])
+        
+        print(optimal_V)
+                
+        old_V = optimal_V
+                
+    return optimal_V            
             
         
 #         for i in range(1000):
@@ -238,28 +293,44 @@ hallways = [45,80,136,100]
 r = Four_room_domain(14,100)
 
 #room 1
-r1 = Four_room_domain(np.random.choice(r.w['room{}'.fromat(1)],1),hallways[0])
-V_r1_1 = np.zeros(r1.size_room[0]*r1.size_room[1]).reshape(r1.size_room[0],r1.size_room[1])
-r2 = Four_room_domain(np.random.choice(r.w['room{}'.fromat(1)],1),hallways[1])
-V_r1_2 = np.zeros(r1.size_room[0]*r1.size_room[1]).reshape(r1.size_room[0],r1.size_room[1])
+r1 = Four_room_domain(14,hallways[0])
+V_r1_1 = np.zeros(r1.room1.shape[0]*r1.room1.shape[1]).reshape(r1.room1.shape[0],r1.room1.shape[1])
+r2 = Four_room_domain(14,hallways[1])
+V_r1_2 = np.zeros(r1.room1.shape[0]*r1.room1.shape[1]).reshape(r1.room1.shape[0],r1.room1.shape[1])
 #room 2
-r3 = Four_room_domain(np.random.choice(r.w['room{}'.fromat(2)],1),hallways[1])
-V_r2_1 = np.zeros(r2.size_room[0]*r2.size_room[1]).reshape(r2.size_room[0],r2.size_room[1])
-r4 = Four_room_domain(np.random.choice(r.w['room{}'.fromat(2)],1),hallways[2]) 
-V_r2_2 = np.zeros(r2.size_room[0]*r2.size_room[1]).reshape(r2.size_room[0],r2.size_room[1])
+r3 = Four_room_domain(20,hallways[1])
+V_r2_1 =np.zeros(r2.room2.shape[0]*r2.room2.shape[1]).reshape(r2.room2.shape[0],r2.room2.shape[1])
+r4 = Four_room_domain(20,hallways[2]) 
+V_r2_2 = np.zeros(r2.room2.shape[0]*r2.room2.shape[1]).reshape(r2.room2.shape[0],r2.room2.shape[1])
 #room 3
-r5 = Four_room_domain(np.random.choice(r.w['room{}'.fromat(3)],1),hallways[0])
-V_r3_1 = np.zeros(r3.size_room[0]*r3.size_room[1]).reshape(r3.size_room[0],r3.size_room[1])
-r6 = Four_room_domain(np.random.choice(r.w['room{}'.fromat(3)],1),hallways[3])
-V_r3_2 = np.zeros(r3.size_room[0]*r3.size_room[1]).reshape(r3.size_room[0],r3.size_room[1])
+r5 = Four_room_domain(92,hallways[0])
+V_r3_1 = np.zeros(r3.room3.shape[0]*r3.room3.shape[1]).reshape(r3.room3.shape[0],r3.room3.shape[1])
+r6 = Four_room_domain(92,hallways[3])
+V_r3_2 = np.zeros(r3.room3.shape[0]*r3.room3.shape[1]).reshape(r3.room3.shape[0],r3.room3.shape[1])
 #room 4
-r7 = Four_room_domain(np.random.choice(r.w['room{}'.fromat(4)],1),hallways[2])
-V_r4_1 = np.zeros(r4.size_room[0]*r4.size_room[1]).reshape(r4.size_room[0],r4.size_room[1])
-r8 = Four_room_domain(np.random.choice(r.w['room{}'.fromat(4)],1),hallways[3])
-V_r4_2 = np.zeros(r4.size_room[0]*r4.size_room[1]).reshape(r4.size_room[0],r4.size_room[1])
+r7 = Four_room_domain(111,hallways[2])
+V_r4_1 = np.zeros(r4.room4.shape[0]*r4.room4.shape[1]).reshape(r4.room4.shape[0],r4.room4.shape[1])
+r8 = Four_room_domain(111,hallways[3])
+V_r4_2 = np.zeros(r4.room4.shape[0]*r4.room4.shape[1]).reshape(r4.room4.shape[0],r4.room4.shape[1])
+
+opt_V_1_1 = standard_Value_iteration_Algorithm(r1, V_r1_1, 0.9, 1)
+opt_V_1_2 = standard_Value_iteration_Algorithm(r2, V_r1_2, 0.9, 1)
+opt_V_2_1 = standard_Value_iteration_Algorithm(r3, V_r2_1, 0.9, 2)
+opt_V_2_2 = standard_Value_iteration_Algorithm(r4, V_r2_2, 0.9, 2)
+opt_V_3_1 = standard_Value_iteration_Algorithm(r5, V_r3_1, 0.9, 3)
+opt_V_3_2 = standard_Value_iteration_Algorithm(r6, V_r3_2, 0.9, 3)
+opt_V_4_1 = standard_Value_iteration_Algorithm(r7, V_r4_1, 0.9, 4)
+opt_V_4_2 = standard_Value_iteration_Algorithm(r8, V_r4_2, 0.9, 4)
+
+print('V_1_1',opt_V_1_1)
+print('V_1_2',opt_V_1_2)
+print('V_2_1',opt_V_2_1)
+print('V_2_2',opt_V_2_2)
+print('V_3_1',opt_V_3_1)
+print('V_3_2',opt_V_3_2)
+print('V_4_1',opt_V_4_1)
+print('V_4_2',opt_V_4_2)
 
 
 
-
-
-r.move(3,False)
+# r.move(3,False)
