@@ -89,10 +89,10 @@ def train_vanilla_gradient(w,alpha):
     
     for j in range(iter):
         J_w,_,state,action,reward,train_iter = perform_rollout(w, False)
-        sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
+#         sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
         count = 0
         for m in range(episodes):
-            
+            sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
             grad_w = np.zeros(train_iter[m]*state_space).reshape(state_space,train_iter[m])
             
             for t in range(train_iter[m]):
@@ -125,10 +125,10 @@ def train_vanilla_gradient_dyn(w):
     
     for j in range(iter):
         J_w,_,state,action,reward,train_iter = perform_rollout(w, False)
-        sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
+#         sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
         count = 0
         for m in range(episodes):
-            
+            sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
             grad_w = np.zeros(train_iter[m]*state_space).reshape(state_space,train_iter[m])
             
             for t in range(train_iter[m]):
@@ -163,10 +163,10 @@ def train_vanilla_gradient_ad(w):
     
     for j in range(iter):
         J_w,_,state,action,reward,train_iter = perform_rollout(w, False)
-        sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
+#         sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
         count = 0
         for m in range(episodes):
-            
+            sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
             grad_w = np.zeros(train_iter[m]*state_space).reshape(state_space,train_iter[m])
             
             for t in range(train_iter[m]):
@@ -214,10 +214,10 @@ def train_REINFORCE_gradient(w,alpha):
     
     for j in range(iter):
         J_w,_,state,action,reward,train_iter = perform_rollout(w, False)
-        sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
+#         sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
         count = 0
         for m in range(episodes):
-            
+            sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
             grad_w = np.zeros(train_iter[m]*state_space).reshape(state_space,train_iter[m])
             
             for t in range(train_iter[m]):
@@ -250,12 +250,12 @@ def train_REINFORCE_gradient_dyn(w):
     
     for j in range(iter):
         J_w,_,state,action,reward,train_iter = perform_rollout(w, False)
-        sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
+#         sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
         count = 0
         for m in range(episodes):
             
             grad_w = np.zeros(train_iter[m]*state_space).reshape(state_space,train_iter[m])
-            
+            sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
             for t in range(train_iter[m]):
                 s = np.matrix(state[count:count+4,t])
                 a = action[m,t]
@@ -289,10 +289,10 @@ def train_REINFORCE_gradient_ad(w):
     
     for j in range(iter):
         J_w,_,state,action,reward,train_iter = perform_rollout(w, False)
-        sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
+#         sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
         count = 0
         for m in range(episodes):
-            
+            sum_t = np.zeros(state_space*episodes).reshape(state_space,episodes)
             grad_w = np.zeros(train_iter[m]*state_space).reshape(state_space,train_iter[m])
             
             for t in range(train_iter[m]):
@@ -456,7 +456,7 @@ def train_adaptivly(w):
 # train_adaptivly(w)
 
 
-runs = 5
+runs = 10
 J_k_static_vanilla = np.zeros(runs*iter).reshape(runs,iter)
 J_k_dyn_vanilla = np.zeros(runs*iter).reshape(runs,iter)
 J_k_ad_vanilla = np.zeros(runs*iter).reshape(runs,iter)
@@ -520,7 +520,7 @@ plt.title('REINFORCE')
 plt.legend()
 plt.xlabel('iteration k')
 plt.ylabel('mean over '+str(runs)+' iteration: J(w_k)')
-plt.grid
+plt.grid()
 plt.show()
 
     
