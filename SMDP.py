@@ -154,12 +154,14 @@ class Four_room_domain():
         self.state = start
         self.reward = 0
 
-def standard_Value_iteration_Algorithm(r,V,gamma,room):
+def standard_Value_iteration_Algorithm(r,V,gamma,room,hallway):
     states = r.states
     R = np.zeros(r.states.size).reshape(r.states.shape[0],r.states.shape[1])
-    for i in range(4):
-        pos_h = np.where(r.hallways[i]==r.states)
-        R[pos_h] = 1
+#     for i in range(4):
+#         pos_h = np.where(r.hallways[i]==r.states)
+#         R[pos_h] = 1
+    pos_h = np.where(hallway == r.states)
+    R[pos_h] =1
         
     optimal_V = np.zeros(V.size).reshape(V.shape[0],V.shape[1])
     old_V = np.zeros(V.size).reshape(V.shape[0],V.shape[1])
@@ -177,13 +179,13 @@ def standard_Value_iteration_Algorithm(r,V,gamma,room):
                 r_l = R[np.where(state-1==states)]
                 
                 if i==0:
-                    action1 = old_V[i,j]
+                    action1 = 0
                     if j == 0:
                         action2 = old_V[i,j+1]
                         action3 = old_V[i+1,j]
-                        action4 = old_V[i,j]
+                        action4 = 0
                     elif j == actual_room.shape[1]-1:
-                        action2 = old_V[i,j]
+                        action2 = 0
                         action3 = old_V[i+1,j]
                         action4 = old_V[i,j-1]
                     else:
@@ -191,14 +193,14 @@ def standard_Value_iteration_Algorithm(r,V,gamma,room):
                         action3 = old_V[i+1,j]
                         action4 = old_V[i,j-1]
                 elif i == actual_room.shape[0]-1:
-                    action3 = old_V[i,j]
+                    action3 = 0
                     if j == 0:
                         action1 = old_V[i-1,j]
                         action2 = old_V[i,j+1]
-                        action4 = old_V[i,j]
+                        action4 = 0
                     elif j == actual_room.shape[1]-1:
                         action1 = old_V[i-1,j]
-                        action2 = old_V[i,j]
+                        action2 = 0
                         action4 = old_V[i,j-1]
                     else:
                         action1 = old_V[i-1,j]
@@ -208,10 +210,10 @@ def standard_Value_iteration_Algorithm(r,V,gamma,room):
                     action1 = old_V[i-1,j]
                     action2 = old_V[i,j+1]
                     action3 = old_V[i+1,j]
-                    action4 = old_V[i,j]
+                    action4 = 0
                 elif j == actual_room.shape[1]-1:
                     action1 = old_V[i-1,j]
-                    action2 = old_V[i,j]
+                    action2 = 0
                     action3 = old_V[i+1,j]
                     action4 = old_V[i,j-1]
                 else:
@@ -313,23 +315,23 @@ V_r4_1 = np.zeros(r4.room4.shape[0]*r4.room4.shape[1]).reshape(r4.room4.shape[0]
 r8 = Four_room_domain(111,hallways[3])
 V_r4_2 = np.zeros(r4.room4.shape[0]*r4.room4.shape[1]).reshape(r4.room4.shape[0],r4.room4.shape[1])
 
-opt_V_1_1 = standard_Value_iteration_Algorithm(r1, V_r1_1, 0.9, 1)
-opt_V_1_2 = standard_Value_iteration_Algorithm(r2, V_r1_2, 0.9, 1)
-opt_V_2_1 = standard_Value_iteration_Algorithm(r3, V_r2_1, 0.9, 2)
-opt_V_2_2 = standard_Value_iteration_Algorithm(r4, V_r2_2, 0.9, 2)
-opt_V_3_1 = standard_Value_iteration_Algorithm(r5, V_r3_1, 0.9, 3)
-opt_V_3_2 = standard_Value_iteration_Algorithm(r6, V_r3_2, 0.9, 3)
-opt_V_4_1 = standard_Value_iteration_Algorithm(r7, V_r4_1, 0.9, 4)
-opt_V_4_2 = standard_Value_iteration_Algorithm(r8, V_r4_2, 0.9, 4)
+opt_V_1_1 = standard_Value_iteration_Algorithm(r1, V_r1_1, 0.9, 1,45)
+opt_V_1_2 = standard_Value_iteration_Algorithm(r2, V_r1_2, 0.9, 1,80)
+opt_V_2_1 = standard_Value_iteration_Algorithm(r3, V_r2_1, 0.9, 2,136)
+opt_V_2_2 = standard_Value_iteration_Algorithm(r4, V_r2_2, 0.9, 2,80)
+opt_V_3_1 = standard_Value_iteration_Algorithm(r5, V_r3_1, 0.9, 3,45)
+opt_V_3_2 = standard_Value_iteration_Algorithm(r6, V_r3_2, 0.9, 3,100)
+opt_V_4_1 = standard_Value_iteration_Algorithm(r7, V_r4_1, 0.9, 4,136)
+opt_V_4_2 = standard_Value_iteration_Algorithm(r8, V_r4_2, 0.9, 4,100)
 
-print('V_1_1',opt_V_1_1)
-print('V_1_2',opt_V_1_2)
-print('V_2_1',opt_V_2_1)
-print('V_2_2',opt_V_2_2)
-print('V_3_1',opt_V_3_1)
-print('V_3_2',opt_V_3_2)
-print('V_4_1',opt_V_4_1)
-print('V_4_2',opt_V_4_2)
+print('V_1_1',np.round(opt_V_1_1,2))
+print('V_1_2',np.round(opt_V_1_2,2))
+print('V_2_1',np.round(opt_V_2_1,2))
+print('V_2_2',np.round(opt_V_2_2,2))
+print('V_3_1',np.round(opt_V_3_1,2))
+print('V_3_2',np.round(opt_V_3_2,2))
+print('V_4_1',np.round(opt_V_4_1,2))
+print('V_4_2',np.round(opt_V_4_2,2))
 
 
 
