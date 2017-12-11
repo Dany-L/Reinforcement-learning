@@ -12,6 +12,7 @@ The Main Algorithms are implemented in python such as
 - Inverse reinforcement learning
 
 Links:
+
 <a href="https://www.ipvs.uni-stuttgart.de/abteilungen/mlr/lehre/lehrveranstaltungen/ss17/Reinforcement-Learning.html">Course by University of Stuttgart</p>
 <a href="http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching.html">Course by David Silver</a>
 
