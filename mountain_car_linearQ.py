@@ -113,20 +113,21 @@ def linearQ(Theta,c,phi,sigma_p,sigma_v,episode,steps,epsilon,gamma,alpha,lamb):
             l = list(Q)
             astar = l.index(max(l))
             a = eps*np.random.randint(env.action_space.n) + (1-eps)*astar
-            if (st%50 == 0):
-                print('state:' ,s,'action:',a)
+#             if (st%50 == 0):
+#                 print('state:' ,s,'action:',a)
             if (not(a ==astar)):
                 e[:,a] = np.zeros(len(Theta[:,0]))
             snew,rnew,done,_ = env._step(a)
-            if (st%50 == 0):
-                print('new state:',snew,'reward:',rnew)
+#             if (st%50 == 0):
+#                 print('new state:',snew,'reward:',rnew)
 #             print('______________________________________________')
 #             env._render()
             
             e[:,a] = e[:,a] + calcPhi(s,phi,c,sigma_p,sigma_v)
             
             
-            if (s[0]>=0.5):
+#             if (s[0]>=0.5):
+            if (done):
                 for i in range(len(Theta[0,:])):
                     for j in range(len(Theta[:,0])):
                         Theta[j,i] = Theta[j,i] + alpha*e[j,i]*(rnew-Q[i])
@@ -150,7 +151,7 @@ def linearQ(Theta,c,phi,sigma_p,sigma_v,episode,steps,epsilon,gamma,alpha,lamb):
             e = gamma*lamb*e
             s = snew
             
-    return steps_til_end
+    return steps_til_end, Theta
         
         
 
@@ -158,7 +159,7 @@ env=gym.make('MountainCar-v0')
 
 n_p = 4
 n_v = 8
-episode = 200
+episode = 20000
 steps = int(1e5)
 epsilon = 0.0
 gamma = 0.99
@@ -178,6 +179,7 @@ for i in range(len(c_v)):
         count +=1
 
 
-step_til_end = linearQ(Theta, c, phi, sigma_p, sigma_v, episode, steps, epsilon, gamma, alpha, lamb)
+step_til_end,Theta = linearQ(Theta, c, phi, sigma_p, sigma_v, episode, steps, epsilon, gamma, alpha, lamb)
 np.save(r'/home/jack/Documents/LiClipse Workspace/RL/mountain_car_data/steps_til_end_rbf.npy',step_til_end) 
-
+np.save(r'/home/jack/Documents/LiClipse Workspace/RL/mountain_car_data/theta_linear.npy',Theta)
+print(Theta)
